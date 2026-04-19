@@ -1,0 +1,31 @@
+#include <Servo.h>
+
+Servo myservo; 
+int pos = 90;   // Initial position
+int sens1 = A0; // Left LDR
+int sens2 = A1; // Right LDR
+int tolerance = 10; // Prevents "jitter" if light is nearly equal
+
+void setup() {
+  myservo.attach(9);
+  pinMode(sens1, INPUT);
+  pinMode(sens2, INPUT);
+  myservo.write(pos);
+  delay(1000);
+}
+
+void loop() {
+  int val1 = analogRead(sens1); // Read left
+  int val2 = analogRead(sens2); // Read right
+
+  if (abs(val1 - val2) > tolerance) { // Only move if difference is significant
+    if (val1 > val2 && pos > 0) {
+      pos--;
+    } else if (val2 > val1 && pos < 180) {
+      pos++;
+    }
+  }
+
+  myservo.write(pos);
+  delay(20); // Small delay for smooth movement
+}
